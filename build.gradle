@@ -1,0 +1,33 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.mapzen'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+task buildJniLib(type:Exec) {
+	commandLine './build.sh'
+}
+
+compileJava.dependsOn(buildJniLib)
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.4'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+tasks.withType(Test) {
+	systemProperty "java.library.path", "src/main/jniLibs"
+}
